@@ -30,6 +30,7 @@
 	============================== -->
     <!-- Bootstrap -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="assets/css/app.min.css"> -->
     <!-- Fontawesome Icon -->
     <link rel="stylesheet" href="assets/css/fontawesome.min.css">
@@ -47,6 +48,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- Custom CSS  -->
     <link rel="stylesheet" href="assets/css/custom.css">
+    <!-- Flatpicker css  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Emailjs -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
@@ -839,7 +842,7 @@
                 </div>
     
                 <div class="modal-body">
-                    <form id="appointmentForm1" class="form-box">
+                    <form id="appointmentForm2" class="form-box">
                         <div class="row g-3 ">
     
                             <!-- Name -->
@@ -863,12 +866,6 @@
                                 <i class="fal small fa-phone"></i>
                             </div>
     
-                            <div class="col-md-6 form-group">
-                                <input type="text" class="dateTime-pick form-control style2" placeholder="Select Date"
-                                    name="appointment_date" required>
-                                <i class="fal small fa-calendar-alt"></i>
-                            </div>
-    
                             <!-- Service -->
                             <div class="col-md-6 form-group">
                                 <select class="form-select style2" name="service" required>
@@ -886,22 +883,26 @@
     
                             <!-- Doctor -->
                             <div class="col-md-6 form-group">
-                                <select class="form-select style2" name="doctor" required>
+                                <select class="form-select style2" name="doctor" onchange="fetchBookingdates(this.value)" required>
                                     <option value="" hidden disabled selected>Choose Doctor</option>
-                                    <option value="Dr. Narendra Reddy Busireddy">Dr. Busireddy Narendra Reddy</option>
-                                    <option value="Dr. B. Deepthi Reddy">Dr. B. Deepthi Reddy</option>
-                                    <option value="Dr.Srinavasa Rao Konakandla">Dr.Srinavasa Rao Konakandla</option>
-                                    <option value="Dr. Nageswara Rao Gopathi">Dr. Nageswara Rao Gopathi</option>
-                                    <option value="Dr. Nune Sankhya">Dr. Nune Sankhya</option>
-                                    <option value="Dr. Yogitha Chennupati">Dr. Yogitha Chennupati</option>
+                                    <option value="3">Dr. Busireddy Narendra Reddy</option>
+                                    <option value="4">Dr. B. Deepthi Reddy</option>
+                                    <option value="5">Dr.Srinavasa Rao Konakandla</option>
+                                    <option value="6">Dr. Nageswara Rao Gopathi</option>
+                                    <option value="7">Dr. Nune Sankhya</option>
+                                    <option value="8">Dr. Yogitha Chennupati</option>
                                 </select>
                             </div>
                             <input type="hidden" name="submission_date" id="submission_date">
-    
-    
+
+                            <!-- Appointment Date -->
+                            <div class="col-md-6 form-group">
+                            <input type="date" class="form-control style2" placeholder="Select Date" name="appointment_date" id="date" required>
+                            </div>
+                            
                             <!-- Submit -->
                             <div class="col-12 text-center">
-                                <button type="submit" class="vs-btn style2">
+                                <button type="button" class="vs-btn style2" onclick="bookAppointment(event)">
                                     Book Appointment <i class="far fa-calendar-alt"></i>
                                 </button>
                             </div>
@@ -953,8 +954,10 @@
     <script src="assets/js/ajax-mail.js"></script>
     <!-- Main Js File -->
     <script src="assets/js/main.js"></script>
-    <!-- forms -->
-     <script src="assets/js/form-subscriptions.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="assets/js/home.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/modal.js"></script>
 
 </body>
 

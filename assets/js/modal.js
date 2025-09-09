@@ -4,6 +4,124 @@ let currentDoctorEmail = null;
 // let isEditMode = false;
 // let originalProfileData = {};
 
+// Doctor-Service mapping based on your hospital's medical staff
+        const doctorServiceMapping = {
+            "Orthopedics": [
+                {
+                    value: "3",
+                    text: "Dr. Busireddy Narendra Reddy",
+                    qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon"
+                },
+                {
+                    value: "5",
+                    text: "Dr. Srinavasa Rao Konakandla",
+                    qualification: "M.B.B.S.,D.NB(Ortho).,F.I.J.R. - Orthopaedic & Joint Replacement Surgeon"
+                }
+            ],
+            "Obstetrics & Gynaecology": [
+                {
+                    value: "4",
+                    text: "Dr. B. Deepthi Reddy",
+                    qualification: "M.S(OBG) - Consultant Obstetrician & Gynaecologist"
+                }
+            ],
+            "Pulmonology": [
+                {
+                    value: "6",
+                    text: "Dr. Nageswara Rao Gopathi",
+                    qualification: "M.D.,FCCP.,FAPSR. - Pulmonologist & Sleep Specialist"
+                }
+            ],
+            "General Medicine": [
+                {
+                    value: "8",
+                    text: "Dr. Yogitha Chennupati",
+                    qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist"
+                }
+            ],
+            "Anaesthesia": [
+                {
+                    value: "7",
+                    text: "Dr. Nune Sankhya",
+                    qualification: "M.B.B.S., M.D.(Anaesthesia) - Anesthesiologist & Intensivist"
+                }
+            ],
+            // Services without specific doctors assigned (you can add general doctors or leave empty)
+            "Neuro Surgery": [],
+            "Plastic Surgery": [],
+            "Emergency & Casualty": [],
+            "General Surgery": []
+        };
+
+        // Function to update doctor dropdown based on selected service
+        function updateDoctorDropdown() {
+            const serviceSelect = document.querySelector('select[name="service"]');
+            const doctorSelect = document.querySelector('select[name="doctor"]');
+
+            if (!serviceSelect || !doctorSelect) {
+                console.error('Service or Doctor dropdown not found');
+                return;
+            }
+
+            serviceSelect.addEventListener('change', function () {
+                const selectedService = this.value;
+
+                // Clear existing doctor options
+                doctorSelect.innerHTML = '<option value="" hidden disabled selected>Choose Doctor</option>';
+
+                // Get doctors for selected service
+                const availableDoctors = doctorServiceMapping[selectedService] || [];
+
+                if (availableDoctors.length === 0) {
+                    // If no doctors available for this service
+                    doctorSelect.innerHTML = '<option value="" hidden disabled selected>No specific doctor assigned - General consultation available</option>';
+                    doctorSelect.disabled = true;
+                } else {
+                    // Populate doctor dropdown with available doctors
+                    doctorSelect.disabled = false;
+
+                    availableDoctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.value;
+                        option.textContent = doctor.text;
+                        option.title = doctor.qualification; // Show qualification on hover
+                        doctorSelect.appendChild(option);
+                    });
+                }
+
+                // Add visual feedback with smooth transition
+                doctorSelect.style.opacity = '0.5';
+                setTimeout(() => {
+                    doctorSelect.style.opacity = '1';
+                }, 200);
+            });
+        }
+
+        // Initialize when modal is shown (for Bootstrap modals)
+        function initializeOnModalShow() {
+            const appointmentModal = document.getElementById('appointmentModal');
+            if (appointmentModal) {
+                appointmentModal.addEventListener('shown.bs.modal', function () {
+                    updateDoctorDropdown();
+                });
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // For immediate initialization if modal is already loaded
+            updateDoctorDropdown();
+
+            // Also initialize for modal show events
+            initializeOnModalShow();
+        });
+
+        // Additional initialization for dynamic content loading
+        window.addEventListener('load', function () {
+            updateDoctorDropdown();
+            initializeOnModalShow();
+        });
+
 // Password toggle functionality
 function togglePassword(fieldId) {
     const passwordField = document.getElementById(fieldId);
