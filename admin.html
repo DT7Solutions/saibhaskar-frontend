@@ -6,172 +6,30 @@
     <title>Doctor Dashboard - Sai Bhaskar Hospitals</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #f58321;
-            --secondary-color: #2c5f41;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --light-bg: #f8f9fa;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        }
-
-        .login-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            padding: 2rem;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .stats-card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .stats-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .appointment-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--primary-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .blocked-date {
-            background: #ffe6e6;
-            border: 1px solid var(--danger-color);
-            border-radius: 5px;
-            padding: 0.5rem;
-            margin: 0.25rem;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #e67317;
-            border-color: #e67317;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 1rem;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .calendar-day:hover {
-            background-color: #f0f0f0;
-        }
-
-        .calendar-day.blocked {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .calendar-day.today {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+   <link rel="stylesheet" href="assets/css/admin.css">
+   <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="assets/img/favicon.png" type="image/x-icon">
 </head>
 <body>
-    <!-- Login Section -->
-    <div id="loginSection" class="login-container">
-        <div class="login-card">
-            <div class="text-center mb-4">
-                <img src="assets/img/saibhaskar-logo.png" alt="Logo" style="height: 60px;" onerror="this.style.display='none'">
-                <h3 class="mt-3">Doctor Login</h3>
-                <p class="text-muted">Access your dashboard</p>
-            </div>
-            
-            <form id="loginForm">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" required>
-                </div>
-                <div id="loginError" class="alert alert-danger hidden"></div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
-            </form>
-        </div>
-    </div>
 
     <!-- Dashboard Section -->
-    <div id="dashboardSection" class="hidden">
-        <div class="dashboard-header">
+    <div id="dashboardSection">
+         <div class="dashboard-header">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col">
-                        <h2 id="doctorName">Welcome, Doctor</h2>
-                        <p class="mb-0">Sai Bhaskar Hospitals - Doctor Dashboard</p>
+                        <h2 id="doctorName">Welcome,<span id="doctor-name"></span></h2>
+                        <p class="mb-0">Sai Bhaskar Hospitals - Profile Upadate</p>
                     </div>
                     <div class="col-auto">
-                    <!-- User Profile -->
-                    <button class="btn btn-light btn-sm" onclick="viewProfile()">
-                        <i class="fas fa-user"></i> Profile
-                    </button>
+                        <a href="/profile.html" class="btn btn-light btn-sm"><i
+                                class="fas fa-user"></i>Profile</a>
                     </div>
-                    
                     <div class="col-auto">
-                        <!-- Change Password -->
-                        <button class="btn btn-warning btn-sm" onclick="changePassword()">
-                            <i class="fas fa-key"></i> Change Password
-                        </button>
+                       <a href="/changepassword.html" class="btn btn-light btn-sm"> <i class="fas fa-key"></i>Change password</a>
                     </div>
-                    
                     <div class="col-auto">
-                        <!-- Logout -->
                         <button class="btn btn-danger btn-sm" onclick="logout()">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
@@ -214,7 +72,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="text-muted mb-1">Blocked Dates</h5>
-                                <h3 id="blockedCount" class="mb-0">0</h3>
+                                <h3 id="blocked-Count" class="mb-0">0</h3>
                             </div>
                             <div class="text-danger">
                                 <i class="fas fa-ban fa-2x"></i>
@@ -241,17 +99,54 @@
                         </div>
                         <div class="card-body">
                             <div class="tab-content">
+
+                                <!-- Today's Appointments -->
                                 <div class="tab-pane fade show active" id="today" role="tabpanel">
-                                    <div id="todayAppointments"></div>
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone Number</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="todayAppointments">
+                                            <tr>
+                                                <td colspan="6" class="text-center"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+
+                                <!-- Upcoming Appointments -->
                                 <div class="tab-pane fade" id="upcoming" role="tabpanel">
-                                    <div id="upcomingAppointments"></div>
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone Number</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="upcomingAppointments">
+                                            <tr>
+                                                <td colspan="6" class="text-center"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Date Blocking -->
                 <div class="col-lg-4">
                     <div class="card">
@@ -266,9 +161,9 @@
                             <button class="btn btn-danger w-100 mb-3" onclick="blockDate()">
                                 <i class="fas fa-ban"></i> Block Date
                             </button>
-                            
+
                             <h6>Blocked Dates:</h6>
-                            <div id="blockedDatesList"></div>
+                            <div id="blockedDatesList" class="d-flex flex-wrap gap-2"></div>
                         </div>
                     </div>
                 </div>
@@ -276,194 +171,47 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- status update model  -->
+            <div id="statusModal"
+                style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+                            background:white; padding:30px; border:2px solid #f58321; border-radius:12px; z-index:1000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); min-width: 320px;">
+                <h3 style="color: #1f66b1; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; text-align: center;">Update
+                    Appointment Status</h3>
+                <form id="statusForm">
+                    <label for="statusSelect"
+                        style="display: block; margin-bottom: 8px; color: #27477d; font-weight: 500;">Status:</label>
+                    <select id="statusSelect" required
+                        style="width: 100%; padding: 10px 12px; border: 2px solid #f58321; border-radius: 6px; font-size: 16px; color: #27477d; background-color: white; box-sizing: border-box;">
+                        <option value="">Select status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <br><br>
+                    <button type="submit"
+                        style="background-color: #2cb624; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 500; margin-right: 10px;">Update</button>
+                    <button type="button" onclick="closeModal()"
+                        style="background-color: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;">Cancel</button>
+                </form>
+            </div>
+            <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+                            background:rgba(53, 56, 61, 0.6); z-index:999;" onclick="closeModal()"></div>
+
     <script>
-        // Doctor credentials (in production, this should be more secure)
-        const doctorCredentials = {
-            'narendra.reddy@saibhaskar.com': {
-                password: 'narendra123',
-                name: 'Dr. Busireddy Narendra Reddy',
-                id: 'Dr. Narendra Reddy Busireddy'
-            },
-            'deepthi.reddy@saibhaskar.com': {
-                password: 'deepthi123',
-                name: 'Dr. B. Deepthi Reddy',
-                id: 'Dr. B. Deepthi Reddy'
-            },
-            'srinivasa.rao@saibhaskar.com': {
-                password: 'srinivasa123',
-                name: 'Dr. Srinavasa Rao Konakandla',
-                id: 'Dr.Srinavasa Rao Konakandla'
-            },
-            'nageswara.rao@saibhaskar.com': {
-                password: 'nageswara123',
-                name: 'Dr. Nageswara Rao Gopathi',
-                id: 'Dr. Nageswara Rao Gopathi'
-            },
-            'sankhya.nune@saibhaskar.com': {
-                password: 'sankhya123',
-                name: 'Dr. Nune Sankhya',
-                id: 'Dr. Nune Sankhya'
-            },
-            'yogitha.chennupati@saibhaskar.com': {
-                password: 'yogitha123',
-                name: 'Dr. Yogitha Chennupati',
-                id: 'Dr. Yogitha Chennupati'
-            }
-        };
 
-        let currentDoctor = null;
+    // Retrieve and parse user data
+    const user = JSON.parse(localStorage.getItem("user"));
 
-        // Check if already logged in
-        window.onload = function() {
-            const loggedInDoctor = localStorage.getItem('loggedInDoctor');
-            if (loggedInDoctor) {
-                currentDoctor = JSON.parse(loggedInDoctor);
-                showDashboard();
-            }
-        };
+    // Combine first and last name
+    const fullName = `${user.fname} ${user.lname}`;
 
-        // Login functionality
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('loginError');
-
-            if (doctorCredentials[email] && doctorCredentials[email].password === password) {
-                currentDoctor = doctorCredentials[email];
-                localStorage.setItem('loggedInDoctor', JSON.stringify(currentDoctor));
-                showDashboard();
-            } else {
-                errorDiv.textContent = 'Invalid email or password';
-                errorDiv.classList.remove('hidden');
-            }
-        });
-
-        function showDashboard() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            document.getElementById('doctorName').textContent = `Welcome, ${currentDoctor.name}`;
-            loadDashboardData();
-        }
-
-        function logout() {
-            localStorage.removeItem('loggedInDoctor');
-            currentDoctor = null;
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-        }
-
-        function loadDashboardData() {
-            loadAppointments();
-            loadBlockedDates();
-            updateStats();
-        }
-
-        function loadAppointments() {
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            const doctorAppointments = appointments.filter(apt => apt.doctor === currentDoctor.id);
-            
-            const today = new Date().toISOString().split('T')[0];
-            const todayAppointments = doctorAppointments.filter(apt => apt.appointment_date === today);
-            const upcomingAppointments = doctorAppointments.filter(apt => apt.appointment_date > today);
-
-            displayAppointments('todayAppointments', todayAppointments);
-            displayAppointments('upcomingAppointments', upcomingAppointments);
-
-            document.getElementById('todayCount').textContent = todayAppointments.length;
-            document.getElementById('upcomingCount').textContent = upcomingAppointments.length;
-        }
-
-        function displayAppointments(containerId, appointments) {
-            const container = document.getElementById(containerId);
-            if (appointments.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center">No appointments found</p>';
-                return;
-            }
-
-            container.innerHTML = appointments.map(apt => `
-                <div class="appointment-card">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h6 class="mb-1">${apt.user_name}</h6>
-                            <p class="mb-1"><i class="fas fa-envelope"></i> ${apt.user_email}</p>
-                            <p class="mb-1"><i class="fas fa-phone"></i> ${apt.user_phone}</p>
-                            <p class="mb-0"><i class="fas fa-stethoscope"></i> ${apt.service}</p>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <span class="badge bg-primary">${apt.appointment_date}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadBlockedDates() {
-            const blockedDates = JSON.parse(localStorage.getItem(`blockedDates_${currentDoctor.id}`) || '[]');
-            const container = document.getElementById('blockedDatesList');
-            
-            if (blockedDates.length === 0) {
-                container.innerHTML = '<p class="text-muted">No blocked dates</p>';
-            } else {
-                container.innerHTML = blockedDates.map(date => `
-                    <div class="blocked-date">
-                        <span>${date}</span>
-                        <button class="btn btn-sm btn-link text-danger p-0 ms-2" onclick="unblockDate('${date}')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-            
-            document.getElementById('blockedCount').textContent = blockedDates.length;
-        }
-
-        function blockDate() {
-            const dateInput = document.getElementById('blockDate');
-            const selectedDate = dateInput.value;
-            
-            if (!selectedDate) {
-                alert('Please select a date to block');
-                return;
-            }
-
-            const today = new Date().toISOString().split('T')[0];
-            if (selectedDate <= today) {
-                alert('Cannot block past or current dates');
-                return;
-            }
-
-            const blockedDates = JSON.parse(localStorage.getItem(`blockedDates_${currentDoctor.id}`) || '[]');
-            
-            if (!blockedDates.includes(selectedDate)) {
-                blockedDates.push(selectedDate);
-                blockedDates.sort();
-                localStorage.setItem(`blockedDates_${currentDoctor.id}`, JSON.stringify(blockedDates));
-                loadBlockedDates();
-                dateInput.value = '';
-            } else {
-                alert('This date is already blocked');
-            }
-        }
-
-        function unblockDate(date) {
-            if (confirm(`Unblock date ${date}?`)) {
-                const blockedDates = JSON.parse(localStorage.getItem(`blockedDates_${currentDoctor.id}`) || '[]');
-                const updatedDates = blockedDates.filter(d => d !== date);
-                localStorage.setItem(`blockedDates_${currentDoctor.id}`, JSON.stringify(updatedDates));
-                loadBlockedDates();
-            }
-        }
-
-        function updateStats() {
-            // Stats are updated in loadAppointments and loadBlockedDates
-        }
-
-        // Set minimum date for blocking to tomorrow
-        document.getElementById('blockDate').min = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    // Bind to the span
+    document.getElementById("doctor-name").textContent = fullName;
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/config.js"></script>
+
 </body>
 </html>

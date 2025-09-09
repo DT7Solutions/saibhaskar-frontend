@@ -47,6 +47,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- Custom CSS  -->
     <link rel="stylesheet" href="assets/css/custom.css">
+    <!-- Flatpicker css  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Emailjs -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
@@ -1443,14 +1445,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- CSS to remove black overlay -->
-    <style>
-        .modal-backdrop {
-            background-color: rgba(255, 255, 255, 0.6) !important;
-            /* light overlay */
-        }
-    </style>
     
     <!-- Appointment Popup Modal -->
     <div class="modal fade" id="appointmentModal" tabindex="-1" aria-hidden="true">
@@ -1462,7 +1456,7 @@
                 </div>
     
                 <div class="modal-body">
-                    <form id="appointmentForm1" class="form-box">
+                    <form id="appointmentForm2" class="form-box">
                         <div class="row g-3 ">
     
                             <!-- Name -->
@@ -1486,12 +1480,6 @@
                                 <i class="fal small fa-phone"></i>
                             </div>
     
-                            <div class="col-md-6 form-group">
-                                <input type="text" class="dateTime-pick form-control style2" placeholder="Select Date"
-                                    name="appointment_date" required>
-                                <i class="fal small fa-calendar-alt"></i>
-                            </div>
-    
                             <!-- Service -->
                             <div class="col-md-6 form-group">
                                 <select class="form-select style2" name="service" required>
@@ -1509,22 +1497,26 @@
     
                             <!-- Doctor -->
                             <div class="col-md-6 form-group">
-                                <select class="form-select style2" name="doctor" required>
+                                <select class="form-select style2" name="doctor" onchange="fetchBookingdates(this.value)" required>
                                     <option value="" hidden disabled selected>Choose Doctor</option>
-                                    <option value="Dr. Narendra Reddy Busireddy">Dr. Busireddy Narendra Reddy</option>
-                                    <option value="Dr. B. Deepthi Reddy">Dr. B. Deepthi Reddy</option>
-                                    <option value="Dr.Srinavasa Rao Konakandla">Dr.Srinavasa Rao Konakandla</option>
-                                    <option value="Dr. Nageswara Rao Gopathi">Dr. Nageswara Rao Gopathi</option>
-                                    <option value="Dr. Nune Sankhya">Dr. Nune Sankhya</option>
-                                    <option value="Dr. Yogitha Chennupati">Dr. Yogitha Chennupati</option>
+                                    <option value="3">Dr. Busireddy Narendra Reddy</option>
+                                    <option value="4">Dr. B. Deepthi Reddy</option>
+                                    <option value="5">Dr.Srinavasa Rao Konakandla</option>
+                                    <option value="6">Dr. Nageswara Rao Gopathi</option>
+                                    <option value="7">Dr. Nune Sankhya</option>
+                                    <option value="8">Dr. Yogitha Chennupati</option>
                                 </select>
                             </div>
                             <input type="hidden" name="submission_date" id="submission_date">
-    
-    
+
+                            <!-- Appointment Date -->
+                            <div class="col-md-6 form-group">
+                            <input type="date" class="form-control style2" placeholder="Select Date" name="appointment_date" id="date" required>
+                            </div>
+                            
                             <!-- Submit -->
                             <div class="col-12 text-center">
-                                <button type="submit" class="vs-btn style2">
+                                <button type="button" class="vs-btn style2" onclick="bookAppointment(event)">
                                     Book Appointment <i class="far fa-calendar-alt"></i>
                                 </button>
                             </div>
@@ -1580,7 +1572,130 @@
     <!-- Main Js File -->
     <script src="assets/js/main.js"></script>
     <!-- forms js  -->
-    <script src="assets/js/form-subscriptions.js"></script>
+    <!-- <script src="assets/js/form-subscriptions.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="assets/js/home.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/modal.js"></script>
+    <script>
+        // Doctor-Service mapping based on your hospital's medical staff
+        const doctorServiceMapping = {
+            "Orthopedics": [
+                {
+                    value: "3",
+                    text: "Dr. Busireddy Narendra Reddy",
+                    qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon"
+                },
+                {
+                    value: "5",
+                    text: "Dr. Srinavasa Rao Konakandla",
+                    qualification: "M.B.B.S.,D.NB(Ortho).,F.I.J.R. - Orthopaedic & Joint Replacement Surgeon"
+                }
+            ],
+            "Obstetrics & Gynaecology": [
+                {
+                    value: "4",
+                    text: "Dr. B. Deepthi Reddy",
+                    qualification: "M.S(OBG) - Consultant Obstetrician & Gynaecologist"
+                }
+            ],
+            "Pulmonology": [
+                {
+                    value: "6",
+                    text: "Dr. Nageswara Rao Gopathi",
+                    qualification: "M.D.,FCCP.,FAPSR. - Pulmonologist & Sleep Specialist"
+                }
+            ],
+            "General Medicine": [
+                {
+                    value: "8",
+                    text: "Dr. Yogitha Chennupati",
+                    qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist"
+                }
+            ],
+            "Anaesthesia": [
+                {
+                    value: "7",
+                    text: "Dr. Nune Sankhya",
+                    qualification: "M.B.B.S., M.D.(Anaesthesia) - Anesthesiologist & Intensivist"
+                }
+            ],
+            // Services without specific doctors assigned (you can add general doctors or leave empty)
+            "Neuro Surgery": [],
+            "Plastic Surgery": [],
+            "Emergency & Casualty": [],
+            "General Surgery": []
+        };
+
+        // Function to update doctor dropdown based on selected service
+        function updateDoctorDropdown() {
+            const serviceSelect = document.querySelector('select[name="service"]');
+            const doctorSelect = document.querySelector('select[name="doctor"]');
+
+            if (!serviceSelect || !doctorSelect) {
+                console.error('Service or Doctor dropdown not found');
+                return;
+            }
+
+            serviceSelect.addEventListener('change', function () {
+                const selectedService = this.value;
+
+                // Clear existing doctor options
+                doctorSelect.innerHTML = '<option value="" hidden disabled selected>Choose Doctor</option>';
+
+                // Get doctors for selected service
+                const availableDoctors = doctorServiceMapping[selectedService] || [];
+
+                if (availableDoctors.length === 0) {
+                    // If no doctors available for this service
+                    doctorSelect.innerHTML = '<option value="" hidden disabled selected>No specific doctor assigned - General consultation available</option>';
+                    doctorSelect.disabled = true;
+                } else {
+                    // Populate doctor dropdown with available doctors
+                    doctorSelect.disabled = false;
+
+                    availableDoctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.value;
+                        option.textContent = doctor.text;
+                        option.title = doctor.qualification; // Show qualification on hover
+                        doctorSelect.appendChild(option);
+                    });
+                }
+
+                // Add visual feedback with smooth transition
+                doctorSelect.style.opacity = '0.5';
+                setTimeout(() => {
+                    doctorSelect.style.opacity = '1';
+                }, 200);
+            });
+        }
+
+        // Initialize when modal is shown (for Bootstrap modals)
+        function initializeOnModalShow() {
+            const appointmentModal = document.getElementById('appointmentModal');
+            if (appointmentModal) {
+                appointmentModal.addEventListener('shown.bs.modal', function () {
+                    updateDoctorDropdown();
+                });
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // For immediate initialization if modal is already loaded
+            updateDoctorDropdown();
+
+            // Also initialize for modal show events
+            initializeOnModalShow();
+        });
+
+        // Additional initialization for dynamic content loading
+        window.addEventListener('load', function () {
+            updateDoctorDropdown();
+            initializeOnModalShow();
+        });
+    </script>
 
 
 

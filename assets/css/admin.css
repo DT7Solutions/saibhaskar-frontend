@@ -183,3 +183,12 @@ body {
     padding-top: 1rem;
     border-top: 1px solid #eee;
 }
+.col-auto a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; 
+}
+
+.col-auto .fas-fa-key {
+    background-color: #f58321 !important;
+}

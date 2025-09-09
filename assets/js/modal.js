@@ -76,7 +76,7 @@ function login_functionality() {
             localStorage.setItem("user", JSON.stringify(data.data));
             
             // Remove the leading slash
-            window.location.href = "/modal-admin.html";
+            window.location.href = "/admin.html";
         } else {
             alert(data.message);
             loginError.textContent = data.message || "Invalid credentials.";
@@ -100,14 +100,14 @@ function logout() {
 
         // Clear frontend storage
         localStorage.removeItem("user");
-        window.location.href = "/modal-login.html";
+        window.location.href = "/login.html";
     })
     .catch(error => {
         console.error("Logout Error:", error);
 
         // Even if API fails, clear local storage
         localStorage.removeItem("user");
-        window.location.href = "/modal-login.html";
+        window.location.href = "/login.html";
     });
 }
 
@@ -462,7 +462,8 @@ function updatePassword() {
             form.reset();
             // Optional: log out user after password change
             localStorage.removeItem('user'); 
-            window.location.href = '/login/'; // redirect to login
+            // window.location.href = '/login/'; // redirect to login
+            window.location.href = "/login.html";
         }
     })
     .catch(err => {

@@ -249,44 +249,6 @@
         </div>
     </header>
     
-    <style>
-        /* Modal backdrop blur */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.4) !important;
-            backdrop-filter: blur(0.3px);
-            -webkit-backdrop-filter: blur(0.3px);
-        }
-    
-        /* Blur main content when modal is open */
-        body.modal-open .header-wrapper,
-        body.modal-open .vs-hero-wrapper,
-        body.modal-open .vs-about-wrapper,
-        body.modal-open .vs-service-wrapper,
-        body.modal-open .vs-health-schemes,
-        body.modal-open .vs-team-wrapper,
-        body.modal-open .newsletter-section,
-        body.modal-open .testimonial-wrapper,
-        body.modal-open .vs-brand-wrapper,
-        body.modal-open .footer-wrapper {
-            filter: blur(0.3px);
-            transition: filter 0.3s ease;
-        }
-    
-        /* Modal animation & style */
-        .modal-dialog {
-            transform: scale(0.5);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-    
-        .modal.show .modal-dialog {
-            transform: scale(1);
-        }
-    
-        .modal-content {
-            border-radius: 12px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-        }
-    </style>
 
     <!--Hero Area-->
     <section class="vs-hero-wrapper position-relative ">
