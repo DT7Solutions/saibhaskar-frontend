@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Sai Bhaskar Hospitals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection">
+         <div class="dashboard-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h2 id="doctorName">Welcome,<span id="doctor-name"></span></h2>
+                        <p class="mb-0">Sai Bhaskar Hospitals - Profile Upadate</p>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/modal-profile.html" class="btn btn-light btn-sm"><i
+                                class="fas fa-user"></i>Profile</a>
+                    </div>
+                    <div class="col-auto">
+                       <a href="/modal-changepassword.html" class="btn btn-light btn-sm"> <i class="fas fa-key"></i>Change password</a>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-danger btn-sm" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Stats Row -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="text-muted mb-1">Today's Appointments</h5>
+                                <h3 id="todayCount" class="mb-0">0</h3>
+                            </div>
+                            <div class="text-primary">
+                                <i class="fas fa-calendar-day fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="text-muted mb-1">Upcoming Appointments</h5>
+                                <h3 id="upcomingCount" class="mb-0">0</h3>
+                            </div>
+                            <div class="text-success">
+                                <i class="fas fa-calendar-plus fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="text-muted mb-1">Blocked Dates</h5>
+                                <h3 id="blocked-Count" class="mb-0">0</h3>
+                            </div>
+                            <div class="text-danger">
+                                <i class="fas fa-ban fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="row">
+                <!-- Appointments -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="today-tab" data-bs-toggle="tab" href="#today" role="tab">Today's Appointments</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="upcoming-tab" data-bs-toggle="tab" href="#upcoming" role="tab">Upcoming</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+
+                                <!-- Today's Appointments -->
+                                <div class="tab-pane fade show active" id="today" role="tabpanel">
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone Number</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="todayAppointments">
+                                            <tr>
+                                                <td colspan="6" class="text-center"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Upcoming Appointments -->
+                                <div class="tab-pane fade" id="upcoming" role="tabpanel">
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone Number</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="upcomingAppointments">
+                                            <tr>
+                                                <td colspan="6" class="text-center"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date Blocking -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Block Dates</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="blockDate" class="form-label">Select Date to Block</label>
+                                <input type="date" class="form-control" id="blockDate">
+                            </div>
+                            <button class="btn btn-danger w-100 mb-3" onclick="blockDate()">
+                                <i class="fas fa-ban"></i> Block Date
+                            </button>
+
+                            <h6>Blocked Dates:</h6>
+                            <div id="blockedDatesList" class="d-flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!-- status update model  -->
+            <div id="statusModal"
+                style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+                            background:white; padding:30px; border:2px solid #f58321; border-radius:12px; z-index:1000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); min-width: 320px;">
+                <h3 style="color: #1f66b1; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; text-align: center;">Update
+                    Appointment Status</h3>
+                <form id="statusForm">
+                    <label for="statusSelect"
+                        style="display: block; margin-bottom: 8px; color: #27477d; font-weight: 500;">Status:</label>
+                    <select id="statusSelect" required
+                        style="width: 100%; padding: 10px 12px; border: 2px solid #f58321; border-radius: 6px; font-size: 16px; color: #27477d; background-color: white; box-sizing: border-box;">
+                        <option value="">Select status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <br><br>
+                    <button type="submit"
+                        style="background-color: #2cb624; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 500; margin-right: 10px;">Update</button>
+                    <button type="button" onclick="closeModal()"
+                        style="background-color: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;">Cancel</button>
+                </form>
+            </div>
+            <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+                            background:rgba(53, 56, 61, 0.6); z-index:999;" onclick="closeModal()"></div>
+
+    <script>
+
+    // Retrieve and parse user data
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // Combine first and last name
+    const fullName = `${user.fname} ${user.lname}`;
+
+    // Bind to the span
+    document.getElementById("doctor-name").textContent = fullName;
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/config.js"></script>
+
+</body>
+</html>
