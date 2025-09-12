@@ -194,7 +194,7 @@ function login_functionality() {
             localStorage.setItem("user", JSON.stringify(data.data));
             
             // Remove the leading slash
-            window.location.href = "saibhaskar-frontend/admin.html";
+            window.location.href = "/admin.html";
         } else {
             alert(data.message);
             loginError.textContent = data.message || "Invalid credentials.";
