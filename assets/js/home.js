@@ -26,7 +26,7 @@ function fetchBookingdates(doctorId) {
         })
         .then(data => {
             console.log("Blocked dates response:", data);
-            alert(JSON.stringify(data));
+            // alert(JSON.stringify(data));
             const blockedDates = data.map(item => item.date);
             localStorage.setItem("doc_b_d_2", JSON.stringify(data));
             initDatepicker(blockedDates);
