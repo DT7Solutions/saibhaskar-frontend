@@ -1,6 +1,6 @@
 // API Configuration
 const API_CONFIG = {
-    BASE_URL: 'https://codkraft.com/',
+    BASE_URL: 'https://codkraft.com',
     ENDPOINTS: {
         LOGIN: '/api/login/',
         LOGOUT: '/api/logout/',
