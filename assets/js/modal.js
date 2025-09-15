@@ -347,57 +347,161 @@ function bookAppointment(event) {
     });
 }
 
+// function loadAppointments() {
+//     const user = JSON.parse(localStorage.getItem("user"));
+//     if (!user || !user.id) {
+//         console.error("No doctor info found in localStorage.");
+//         return;
+//     }
+    
+//     console.log("Loading appointments for doctor ID:", user.id);
+    
+//     // Use the ENDPOINTS function to get the correct URL
+//     const endpoint = API_CONFIG.ENDPOINTS.GET_APPOINTMENTS(user.id);
+//     console.log("API endpoint:", endpoint);
+    
+//     apiFetch(endpoint, {
+//         method: "GET"
+//     })
+//     .then(response => {
+//         console.log("Response status:", response.status);
+//         if (!response.ok) {
+//             throw new Error(`Failed to fetch appointments: ${response.status}`);
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log("Appointments data received:", data);
+//         document.getElementById("todayCount").textContent = data.today?.length || 0;
+//         document.getElementById("upcomingCount").textContent = data.upcoming?.length || 0;
+//         renderAppointments("todayAppointments", data.today);
+//         renderAppointments("upcomingAppointments", data.upcoming);
+//     })
+//     .catch(error => {
+//         console.error("Error loading appointments:", error);
+//     });
+// }
+
+// function renderAppointments(tableId, appointments) {
+//     const tbody = document.getElementById(tableId);
+//     console.log(`Rendering appointments for ${tableId}:`, appointments);
+    
+//     if (!tbody) {
+//         console.error(`Table body with ID '${tableId}' not found`);
+//         return;
+//     }
+    
+//     tbody.innerHTML = ""; // Clear old rows
+    
+//     if (!appointments || appointments.length === 0) {
+//         tbody.innerHTML = `<tr><td colspan="6" class="text-center">No appointments</td></tr>`;
+//         return;
+//     }
+    
+//     appointments.forEach(appt => {
+//         const row = document.createElement('tr');
+//         row.innerHTML = `
+//             <td>${appt.user_name || 'N/A'}</td>
+//             <td>${appt.user_email || 'N/A'}</td>
+//             <td>${appt.user_phone || 'N/A'}</td>
+//             <td>${appt.appointment_date || 'N/A'}</td>
+//             <td>${appt.status || 'N/A'}</td>
+//             <td onclick="statusaction(${appt.id})"><a href="#">Edit</a></td>
+//         `;
+//         tbody.appendChild(row);
+//     });
+// }
+
+// // Make sure to call loadAppointments when the page loads
+// document.addEventListener('DOMContentLoaded', function() {
+//     loadAppointments();
+// });
+
+// let selectedAppointmentId = null;
+
+// // Open modal
+// function statusaction(id) {
+//     selectedAppointmentId = id;
+//     document.getElementById("statusModal").style.display = "block";
+//     document.getElementById("modalOverlay").style.display = "block";
+// }
+
+// // Close modal
+// function closeModal() {
+//     document.getElementById("statusModal").style.display = "none";
+//     document.getElementById("modalOverlay").style.display = "none";
+//     selectedAppointmentId = null;
+// }
+
+// // Handle form submit
+// document.getElementById("statusForm").addEventListener("submit", function(e) {
+//     e.preventDefault();
+//     const newStatus = document.getElementById("statusSelect").value;
+
+//     if (!newStatus || !selectedAppointmentId) {
+//         alert("Please select a status.");
+//         return;
+//     }
+
+//     apiFetch(API_CONFIG.ENDPOINTS.STATUS_UPDATE(selectedAppointmentId, newStatus), {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//     })
+//     .then(data => {
+//         console.log("Appointment updated:", data);
+//         closeModal();
+//         window.location.reload();
+//     })
+//     .catch(error => {
+//         console.error("Error:", error);
+//         alert("Failed to update appointment");
+//     });
+// });
+
+let selectedAppointmentId = null;
+
+// ----------------------
+// Load Appointments
+// ----------------------
 function loadAppointments() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user || !user.id) {
         console.error("No doctor info found in localStorage.");
         return;
     }
-    
-    console.log("Loading appointments for doctor ID:", user.id);
-    
-    // Use the ENDPOINTS function to get the correct URL
+
     const endpoint = API_CONFIG.ENDPOINTS.GET_APPOINTMENTS(user.id);
-    console.log("API endpoint:", endpoint);
-    
-    apiFetch(endpoint, {
-        method: "GET"
-    })
-    .then(response => {
-        console.log("Response status:", response.status);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch appointments: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Appointments data received:", data);
-        document.getElementById("todayCount").textContent = data.today?.length || 0;
-        document.getElementById("upcomingCount").textContent = data.upcoming?.length || 0;
-        renderAppointments("todayAppointments", data.today);
-        renderAppointments("upcomingAppointments", data.upcoming);
-    })
-    .catch(error => {
-        console.error("Error loading appointments:", error);
-    });
+
+    apiFetch(endpoint, { method: "GET" })
+        .then(response => {
+            if (!response.ok) throw new Error(`Failed to fetch appointments: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("todayCount").textContent = data.today?.length || 0;
+            document.getElementById("upcomingCount").textContent = data.upcoming?.length || 0;
+            renderAppointments("todayAppointments", data.today);
+            renderAppointments("upcomingAppointments", data.upcoming);
+        })
+        .catch(error => console.error("Error loading appointments:", error));
 }
 
+// ----------------------
+// Render Table Rows
+// ----------------------
 function renderAppointments(tableId, appointments) {
     const tbody = document.getElementById(tableId);
-    console.log(`Rendering appointments for ${tableId}:`, appointments);
-    
-    if (!tbody) {
-        console.error(`Table body with ID '${tableId}' not found`);
-        return;
-    }
-    
-    tbody.innerHTML = ""; // Clear old rows
-    
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
     if (!appointments || appointments.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center">No appointments</td></tr>`;
         return;
     }
-    
+
     appointments.forEach(appt => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -412,53 +516,75 @@ function renderAppointments(tableId, appointments) {
     });
 }
 
-// Make sure to call loadAppointments when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    loadAppointments();
-});
+// ----------------------
+// Modal Functions
+// ----------------------
+function statusaction(appointmentId) {
+    selectedAppointmentId = appointmentId;
 
-let selectedAppointmentId = null;
+    const modal = document.getElementById("statusModal");
+    const overlay = document.getElementById("modalOverlay");
 
-// Open modal
-function statusaction(id) {
-    selectedAppointmentId = id;
-    document.getElementById("statusModal").style.display = "block";
-    document.getElementById("modalOverlay").style.display = "block";
+    if (modal && overlay) {
+        modal.style.display = "block";
+        overlay.style.display = "block";
+    }
+
+    // Reset dropdown
+    const dropdown = document.getElementById("statusSelect");
+    if (dropdown) dropdown.value = ""; // or set current status
 }
 
-// Close modal
 function closeModal() {
     document.getElementById("statusModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
     selectedAppointmentId = null;
 }
 
-// Handle form submit
+// ----------------------
+// Handle Status Update
+// ----------------------
 document.getElementById("statusForm").addEventListener("submit", function(e) {
     e.preventDefault();
+
     const newStatus = document.getElementById("statusSelect").value;
 
-    if (!newStatus || !selectedAppointmentId) {
-        alert("Please select a status.");
+    if (!selectedAppointmentId || !newStatus) {
+        alert("Please select a valid status.");
         return;
     }
 
-    apiFetch(API_CONFIG.ENDPOINTS.STATUS_UPDATE(selectedAppointmentId, newStatus), {
+    const url = API_CONFIG.ENDPOINTS.STATUS_UPDATE(selectedAppointmentId, newStatus);
+
+    apiFetch(url, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(async response => {
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || "Failed to update status");
+        }
+        return response.json();
     })
     .then(data => {
-        console.log("Appointment updated:", data);
+        alert(`Appointment status updated to "${newStatus}"`);
         closeModal();
-        window.location.reload();
+        loadAppointments(); // refresh the table only
     })
     .catch(error => {
-        console.error("Error:", error);
-        alert("Failed to update appointment");
+        console.error("Error updating appointment:", error);
+        alert(`Error: ${error.message}`);
     });
 });
+
+// ----------------------
+// Initialize on Page Load
+// ----------------------
+document.addEventListener('DOMContentLoaded', () => {
+    loadAppointments();
+});
+
 
 // Profile Management - Code
 function loadProfile() {
