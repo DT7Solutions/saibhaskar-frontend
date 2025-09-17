@@ -502,6 +502,9 @@ blockquote:before {
     align-items: center;
     min-height: 100vh; /* full screen height */
 }
+#appointmentModal .modal-content.bg-white {
+    background-color: white !important;
+}
 .form-control.style2 {
     border-radius:0.25rem !important;
 }
