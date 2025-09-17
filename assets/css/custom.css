@@ -229,6 +229,11 @@ section.vs-health-schemes.space-bottom {
 .project-img:hover .zoom-overlay {
     opacity: 1;
 }
+.modal-content {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
 .zoom-icon {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
