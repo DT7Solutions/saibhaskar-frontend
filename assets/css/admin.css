@@ -18,11 +18,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(45deg, var(--primary-color), var(--title-color));
-    /* background-image: url(../img/download.jpeg);
+    /* background: linear-gradient(45deg, var(--primary-color), var(--title-color)); */
+    /* background-image: url(../img/bg/login-bg.png); */
+    background-image: 
+    linear-gradient(rgba(114, 166, 221, 0.1), rgba(60, 111, 167, 0.1)), /* semi-transparent black overlay */
+    url('../img/bg/login-bg.png');
     background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat; */
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .login-card {
