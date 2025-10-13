@@ -51,7 +51,14 @@
       })
     });
   };
-
+ 
+  // tooltip 
+  document.addEventListener("DOMContentLoaded", function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
 
 
   /*---------- 03. Mobile Menu Active ----------*/
@@ -1031,6 +1038,8 @@ if($dataV >= 51){
   //     return false;
   //   }
   // }
+  
 
 
 })(jQuery);
+
