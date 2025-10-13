@@ -23,6 +23,10 @@
                         <p class="mb-0">Sai Bhaskar Hospitals</p>
                     </div>
                     <div class="col-auto">
+                        <a href="/admin.html" class="btn btn-light btn-sm"><i 
+                            class="fas fa-calendar-alt"></i>Appointments</a>
+                    </div>
+                    <div class="col-auto">
                         <a href="/profile.html" class="btn btn-light btn-sm"><i
                                 class="fas fa-user"></i>Profile</a>
                     </div>
@@ -158,7 +162,7 @@
                                 <label for="blockDate" class="form-label">Select Date to Block</label>
                                 <input type="date" class="form-control" id="blockDate">
                             </div>
-                            <button class="btn btn-danger w-100 mb-3" onclick="blockDate()">
+                            <button class="btn date-block w-100 mb-3" onclick="blockDate()">
                                 <i class="fas fa-ban"></i> Block Date
                             </button>
 
@@ -195,7 +199,7 @@
                 </form>
             </div>
             <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-                            background:rgba(53, 56, 61, 0.6); z-index:999;" onclick="closeModal()"></div>
+                                        background:rgba(53, 56, 61, 0.6); z-index:999;" onclick="closeModal()"></div>
 
     <script>
 

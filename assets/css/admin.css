@@ -18,7 +18,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(45deg, var(--primary-color), var(--title-color));
 }
 
 .login-card {
@@ -31,7 +31,7 @@ body {
 }
 
 .dashboard-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, var(--primary-color), var(--title-color));
     color: white;
     padding: 1rem 0;
     margin-bottom: 2rem;
@@ -191,4 +191,20 @@ body {
 
 .col-auto .fas-fa-key {
     background-color: #f58321 !important;
+}
+#saveBtn{
+    background-color: #f58321;
+    color: #fff;
+}
+#saveBtn:hover{
+    background-color: #1f66b1;
+    color: #fff;
+}
+.date-block{
+    background-color: #f58321;
+    color: #fff;
+}
+.date-block:hover{
+    background-color: #1f66b1;
+    color: #fff;
 }
