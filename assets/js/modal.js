@@ -299,13 +299,27 @@ function bookAppointment(event) {
     const form = document.getElementById("appointmentForm2");
     const formData = new FormData(form);
     let patient_phonenumber = formData.get("user_phone");
+    let patient_name = formData.get("user_name");
+    let patient_email = formData.get("user_email");
 
-    // Trim removes spaces so even "   " is treated as empty
+    // Validate patient name
+    if (!patient_name || patient_name.trim() === "") {
+        alert("Please enter the patient's name");
+        return;
+    }
+
+    // Validate patient phone number
     if (!patient_phonenumber || patient_phonenumber.trim() === "") {
         alert("Please enter the patient's phone number");
         return;
     }
 
+    // Validate patient email
+    if (!patient_email || patient_email.trim() === "") {
+        alert("Please enter the patient's email address");
+        return;
+    }
+    
     const payload = {
         name: formData.get("user_name"),
         email: formData.get("user_email"),
