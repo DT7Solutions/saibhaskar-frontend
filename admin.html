@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
    <link rel="stylesheet" href="assets/css/admin.css">
+   <link rel="stylesheet" href="assets/css/pagination.css">
    <!-- Favicons - Place favicon.ico in the root directory -->
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="assets/img/favicon.png" type="image/x-icon">
@@ -123,6 +124,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="custom-pagination" id="todayPagination"></div>
                                 </div>
 
                                 <!-- Upcoming Appointments -->
@@ -144,6 +146,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="custom-pagination" id="upcomingPagination"></div>
                                 </div>
 
                             </div>
@@ -178,7 +181,7 @@
             <!-- status update model  -->
             <div id="statusModal"
                 style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-                            background:white; padding:30px; border:2px solid #f58321; border-radius:12px; z-index:1000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); min-width: 320px;">
+                                        background:white; padding:30px; border:2px solid #f58321; border-radius:12px; z-index:1000; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); min-width: 320px;">
                 <h3 style="color: #1f66b1; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; text-align: center;">Update
                     Appointment Status</h3>
                 <form id="statusForm">
@@ -199,7 +202,7 @@
                 </form>
             </div>
             <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-                                        background:rgba(53, 56, 61, 0.6); z-index:999;" onclick="closeModal()"></div>
+                                                    background:rgba(53, 56, 61, 0.6); z-index:999;" onclick="closeModal()"></div>
 
     <script>
 
@@ -216,6 +219,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/modal.js"></script>
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/pagination.js"></script>
 
 </body>
 </html>

@@ -1,6 +1,11 @@
 // Doctor credentials with additional profile information
 let currentDoctor = null;
 let currentDoctorEmail = null;
+let todayAppointmentsData = [];
+let upcomingAppointmentsData = [];
+let todayPage = 1;
+let upcomingPage = 1;
+const itemsPerPage = 10;
 // let isEditMode = false;
 // let originalProfileData = {};
 
@@ -137,28 +142,6 @@ function togglePassword(fieldId) {
         eyeIcon.classList.add('fa-eye');
     }
 }
-
-// Initialize doctor session from localStorage
-// function initializeDoctorSession() {
-//     loadDoctorCredentials();
-    
-//     const loggedInDoctor = localStorage.getItem('loggedInDoctor');
-//     const loggedInEmail = localStorage.getItem('loggedInEmail');
-    
-//     if (loggedInDoctor && loggedInEmail) {
-//         currentDoctor = JSON.parse(loggedInDoctor);
-//         currentDoctorEmail = loggedInEmail;
-//         return true;
-//     }
-//     return false;
-// }
-
-// Check if already logged in
-// window.onload = function() {
-//     if (initializeDoctorSession()) {
-//         showDashboard();
-//     }
-// };
 
 
 function login_functionality() {
@@ -354,118 +337,6 @@ function bookAppointment(event) {
     });
 }
 
-// function loadAppointments() {
-//     const user = JSON.parse(localStorage.getItem("user"));
-//     if (!user || !user.id) {
-//         console.error("No doctor info found in localStorage.");
-//         return;
-//     }
-    
-//     console.log("Loading appointments for doctor ID:", user.id);
-    
-//     // Use the ENDPOINTS function to get the correct URL
-//     const endpoint = API_CONFIG.ENDPOINTS.GET_APPOINTMENTS(user.id);
-//     console.log("API endpoint:", endpoint);
-    
-//     apiFetch(endpoint, {
-//         method: "GET"
-//     })
-//     .then(response => {
-//         console.log("Response status:", response.status);
-//         if (!response.ok) {
-//             throw new Error(`Failed to fetch appointments: ${response.status}`);
-//         }
-//         return response.json();
-//     })
-//     .then(data => {
-//         console.log("Appointments data received:", data);
-//         document.getElementById("todayCount").textContent = data.today?.length || 0;
-//         document.getElementById("upcomingCount").textContent = data.upcoming?.length || 0;
-//         renderAppointments("todayAppointments", data.today);
-//         renderAppointments("upcomingAppointments", data.upcoming);
-//     })
-//     .catch(error => {
-//         console.error("Error loading appointments:", error);
-//     });
-// }
-
-// function renderAppointments(tableId, appointments) {
-//     const tbody = document.getElementById(tableId);
-//     console.log(`Rendering appointments for ${tableId}:`, appointments);
-    
-//     if (!tbody) {
-//         console.error(`Table body with ID '${tableId}' not found`);
-//         return;
-//     }
-    
-//     tbody.innerHTML = ""; // Clear old rows
-    
-//     if (!appointments || appointments.length === 0) {
-//         tbody.innerHTML = `<tr><td colspan="6" class="text-center">No appointments</td></tr>`;
-//         return;
-//     }
-    
-//     appointments.forEach(appt => {
-//         const row = document.createElement('tr');
-//         row.innerHTML = `
-//             <td>${appt.user_name || 'N/A'}</td>
-//             <td>${appt.user_email || 'N/A'}</td>
-//             <td>${appt.user_phone || 'N/A'}</td>
-//             <td>${appt.appointment_date || 'N/A'}</td>
-//             <td>${appt.status || 'N/A'}</td>
-//             <td onclick="statusaction(${appt.id})"><a href="#">Edit</a></td>
-//         `;
-//         tbody.appendChild(row);
-//     });
-// }
-
-// // Make sure to call loadAppointments when the page loads
-// document.addEventListener('DOMContentLoaded', function() {
-//     loadAppointments();
-// });
-
-// let selectedAppointmentId = null;
-
-// // Open modal
-// function statusaction(id) {
-//     selectedAppointmentId = id;
-//     document.getElementById("statusModal").style.display = "block";
-//     document.getElementById("modalOverlay").style.display = "block";
-// }
-
-// // Close modal
-// function closeModal() {
-//     document.getElementById("statusModal").style.display = "none";
-//     document.getElementById("modalOverlay").style.display = "none";
-//     selectedAppointmentId = null;
-// }
-
-// // Handle form submit
-// document.getElementById("statusForm").addEventListener("submit", function(e) {
-//     e.preventDefault();
-//     const newStatus = document.getElementById("statusSelect").value;
-
-//     if (!newStatus || !selectedAppointmentId) {
-//         alert("Please select a status.");
-//         return;
-//     }
-
-//     apiFetch(API_CONFIG.ENDPOINTS.STATUS_UPDATE(selectedAppointmentId, newStatus), {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//     })
-//     .then(data => {
-//         console.log("Appointment updated:", data);
-//         closeModal();
-//         window.location.reload();
-//     })
-//     .catch(error => {
-//         console.error("Error:", error);
-//         alert("Failed to update appointment");
-//     });
-// });
 
 let selectedAppointmentId = null;
 
@@ -487,10 +358,25 @@ function loadAppointments() {
             return response.json();
         })
         .then(data => {
-            document.getElementById("todayCount").textContent = data.today?.length || 0;
-            document.getElementById("upcomingCount").textContent = data.upcoming?.length || 0;
-            renderAppointments("todayAppointments", data.today);
-            renderAppointments("upcomingAppointments", data.upcoming);
+            // ✅ STORE DATA GLOBALLY
+            todayAppointmentsData = data.today || [];
+            upcomingAppointmentsData = data.upcoming || [];
+            
+            // Update counts
+            document.getElementById("todayCount").textContent = todayAppointmentsData.length;
+            document.getElementById("upcomingCount").textContent = upcomingAppointmentsData.length;
+            
+            // ✅ RENDER WITH PAGE 1
+            renderAppointments("todayAppointments", todayAppointmentsData, 1, itemsPerPage);
+            renderAppointments("upcomingAppointments", upcomingAppointmentsData, 1, itemsPerPage);
+            
+            // Initialize pagination
+            if (todayAppointmentsData.length > itemsPerPage) {
+                createPagination('todayPagination', todayAppointmentsData.length, itemsPerPage, 1);
+            }
+            if (upcomingAppointmentsData.length > itemsPerPage) {
+                createPagination('upcomingPagination', upcomingAppointmentsData.length, itemsPerPage, 1);
+            }
         })
         .catch(error => console.error("Error loading appointments:", error));
 }
@@ -498,7 +384,8 @@ function loadAppointments() {
 // ----------------------
 // Render Table Rows
 // ----------------------
-function renderAppointments(tableId, appointments) {
+
+function renderAppointments(tableId, appointments, page = 1, itemsPerPage = 10) {
     const tbody = document.getElementById(tableId);
     if (!tbody) return;
 
@@ -509,7 +396,13 @@ function renderAppointments(tableId, appointments) {
         return;
     }
 
-    appointments.forEach(appt => {
+    // Calculate pagination
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedAppointments = appointments.slice(startIndex, endIndex);
+
+    // Render only current page appointments
+    paginatedAppointments.forEach(appt => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${appt.user_name || 'N/A'}</td>
@@ -523,6 +416,22 @@ function renderAppointments(tableId, appointments) {
     });
 }
 
+// ----------------------
+// Change Page Function
+// ----------------------
+function changePage(containerId, newPage) {
+    if (containerId === 'todayPagination') {
+        todayPage = newPage;
+        // ✅ USE STORED DATA
+        renderAppointments("todayAppointments", todayAppointmentsData, todayPage, itemsPerPage);
+        createPagination('todayPagination', todayAppointmentsData.length, itemsPerPage, todayPage);
+    } else if (containerId === 'upcomingPagination') {
+        upcomingPage = newPage;
+        // ✅ USE STORED DATA
+        renderAppointments("upcomingAppointments", upcomingAppointmentsData, upcomingPage, itemsPerPage);
+        createPagination('upcomingPagination', upcomingAppointmentsData.length, itemsPerPage, upcomingPage);
+    }
+}
 // ----------------------
 // Modal Functions
 // ----------------------
@@ -725,336 +634,3 @@ function updatePassword() {
 
 
 
-
-
-
-
-
-
-
-
-// // Load doctor credentials from localStorage on page load
-// function loadDoctorCredentials() {
-//     const storedCredentials = localStorage.getItem('doctorCredentials');
-//     if (storedCredentials) {
-//         try {
-//             const parsedCredentials = JSON.parse(storedCredentials);
-//             doctorCredentials = { ...doctorCredentials, ...parsedCredentials };
-//         } catch (e) {
-//             console.error('Error loading doctor credentials:', e);
-//         }
-//     }
-// }
-
-// //  Save doctor credentials to localStorage
-// function saveDoctorCredentials() {
-//     localStorage.setItem('doctorCredentials', JSON.stringify(doctorCredentials));
-// }
-
-// function showDashboard() {
-//     hideAllSections();
-//     const dashboardSection = document.getElementById('dashboardSection');
-//     if (dashboardSection) {
-//         dashboardSection.classList.remove('hidden');
-//         const doctorNameElement = document.getElementById('doctorName');
-//         if (doctorNameElement) {
-//             doctorNameElement.textContent = `Welcome, ${currentDoctor.name}`;
-//         }
-//         loadDashboardData();
-//     }
-// }
-
-
-// function changePassword() {
-//     window.location.href = "modal-changepassword.html";
-//     hideAllSections();
-//     const changePasswordSection = document.getElementById('changePasswordSection');
-//     if (changePasswordSection) {
-//         changePasswordSection.classList.remove('hidden');
-//         const form = document.getElementById('changePasswordForm');
-//         if (form) form.reset();
-//         const errorDiv = document.getElementById('passwordError');
-//         const successDiv = document.getElementById('passwordSuccess');
-//         if (errorDiv) errorDiv.classList.add('hidden');
-//         if (successDiv) successDiv.classList.add('hidden');
-//     }
-// }
-
-
-// // function hideAllSections() {
-// //     const sections = ['loginSection', 'dashboardSection', 'profileSection', 'changePasswordSection'];
-// //     sections.forEach(sectionId => {
-// //         const section = document.getElementById(sectionId);
-// //         if (section) {
-// //             section.classList.add('hidden');
-// //         }
-// //     });
-// // }
-
-// function loadProfileData() {
-//     const profileName = document.getElementById('profileName');
-//     const profileEmail = document.getElementById('profileEmail');
-//     const profilePhone = document.getElementById('profilePhone');
-//     const profileAddress = document.getElementById('profileAddress');
-    
-//     if (profileName) profileName.textContent = currentDoctor.name;
-//     if (profileEmail) profileEmail.textContent = currentDoctorEmail;
-//     if (profilePhone) profilePhone.textContent = currentDoctor.phone;
-//     if (profileAddress) profileAddress.textContent = currentDoctor.address;
-    
-//     // Store original data
-//     originalProfileData = {
-//         email: currentDoctorEmail,
-//         phone: currentDoctor.phone,
-//         address: currentDoctor.address
-//     };
-// }
-
-// function toggleEditMode() {
-//     isEditMode = !isEditMode;
-//     const profileCard = document.getElementById('profileCard');
-    
-//     if (isEditMode) {
-//         profileCard.classList.add('edit-mode');
-        
-//         // Convert email to input
-//         const emailSpan = document.getElementById('profileEmail');
-//         emailSpan.innerHTML = `<input type="email" class="form-control" value="${currentDoctorEmail}" id="editEmail">`;
-        
-//         // Convert phone to input
-//         const phoneSpan = document.getElementById('profilePhone');
-//         phoneSpan.innerHTML = `<input type="tel" class="form-control" value="${currentDoctor.phone}" id="editPhone">`;
-        
-//         // Convert address to textarea
-//         const addressSpan = document.getElementById('profileAddress');
-//         addressSpan.innerHTML = `<textarea class="form-control" id="editAddress">${currentDoctor.address}</textarea>`;
-        
-//         // Show/hide buttons
-//         document.getElementById('editBtn').classList.add('hidden');
-//         document.getElementById('saveBtn').classList.remove('hidden');
-//         document.getElementById('cancelBtn').classList.remove('hidden');
-//     }
-// }
-
-// function cancelEdit() {
-//     isEditMode = false;
-//     const profileCard = document.getElementById('profileCard');
-//     profileCard.classList.remove('edit-mode');
-    
-//     // Restore original data
-//     document.getElementById('profileEmail').textContent = originalProfileData.email;
-//     document.getElementById('profilePhone').textContent = originalProfileData.phone;
-//     document.getElementById('profileAddress').textContent = originalProfileData.address;
-    
-//     // Show/hide buttons
-//     document.getElementById('editBtn').classList.remove('hidden');
-//     document.getElementById('saveBtn').classList.add('hidden');
-//     document.getElementById('cancelBtn').classList.add('hidden');
-// }
-
-// function saveProfile() {
-//     const newEmail = document.getElementById('editEmail').value;
-//     const newPhone = document.getElementById('editPhone').value;
-//     const newAddress = document.getElementById('editAddress').value;
-    
-//     // Validate email
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailRegex.test(newEmail)) {
-//         alert('Please enter a valid email address');
-//         return;
-//     }
-    
-//     // Validate phone
-//     if (newPhone.length < 10) {
-//         alert('Please enter a valid phone number');
-//         return;
-//     }
-    
-//     // Update credentials if email changed
-//     if (newEmail !== currentDoctorEmail) {
-//         // Move credentials to new email key
-//         doctorCredentials[newEmail] = doctorCredentials[currentDoctorEmail];
-//         delete doctorCredentials[currentDoctorEmail];
-//         currentDoctorEmail = newEmail;
-//         localStorage.setItem('loggedInEmail', newEmail);
-//     }
-    
-//     // Update doctor data
-//     currentDoctor.phone = newPhone;
-//     currentDoctor.address = newAddress;
-//     doctorCredentials[currentDoctorEmail].phone = newPhone;
-//     doctorCredentials[currentDoctorEmail].address = newAddress;
-    
-//     // Update localStorage
-//     localStorage.setItem('loggedInDoctor', JSON.stringify(currentDoctor));
-    
-//     // Exit edit mode
-//     isEditMode = false;
-//     const profileCard = document.getElementById('profileCard');
-//     profileCard.classList.remove('edit-mode');
-    
-//     // Update display
-//     document.getElementById('profileEmail').textContent = currentDoctorEmail;
-//     document.getElementById('profilePhone').textContent = currentDoctor.phone;
-//     document.getElementById('profileAddress').textContent = currentDoctor.address;
-    
-//     // Update original data
-//     originalProfileData = {
-//         email: currentDoctorEmail,
-//         phone: currentDoctor.phone,
-//         address: currentDoctor.address
-//     };
-    
-//     // Show/hide buttons
-//     document.getElementById('editBtn').classList.remove('hidden');
-//     document.getElementById('saveBtn').classList.add('hidden');
-//     document.getElementById('cancelBtn').classList.add('hidden');
-    
-//     alert('Profile updated successfully!');
-// }
-
-// // Change Password Form Handler
-// document.addEventListener('DOMContentLoaded', function() {
-//     const changePasswordForm = document.getElementById('changePasswordForm');
-//     if (changePasswordForm) {
-//         changePasswordForm.addEventListener('submit', function(e) {
-//             e.preventDefault();
-            
-//             const currentPassword = document.getElementById('currentPassword').value;
-//             const newPassword = document.getElementById('newPassword').value;
-//             const confirmPassword = document.getElementById('confirmPassword').value;
-//             const errorDiv = document.getElementById('passwordError');
-//             const successDiv = document.getElementById('passwordSuccess');
-            
-//             // Hide previous messages
-//             if (errorDiv) errorDiv.classList.add('hidden');
-//             if (successDiv) successDiv.classList.add('hidden');
-            
-//             // Validate current password
-//             if (currentPassword !== currentDoctor.password) {
-//                 if (errorDiv) {
-//                     errorDiv.textContent = 'Current password is incorrect';
-//                     errorDiv.classList.remove('hidden');
-//                 }
-//                 return;
-//             }
-            
-//             // Validate new password
-//             if (newPassword.length < 6) {
-//                 if (errorDiv) {
-//                     errorDiv.textContent = 'New password must be at least 6 characters long';
-//                     errorDiv.classList.remove('hidden');
-//                 }
-//                 return;
-//             }
-            
-//             // Validate password confirmation
-//             if (newPassword !== confirmPassword) {
-//                 if (errorDiv) {
-//                     errorDiv.textContent = 'New passwords do not match';
-//                     errorDiv.classList.remove('hidden');
-//                 }
-//                 return;
-//             }
-            
-//             // Check if new password is same as current
-//             if (newPassword === currentPassword) {
-//                 if (errorDiv) {
-//                     errorDiv.textContent = 'New password must be different from current password';
-//                     errorDiv.classList.remove('hidden');
-//                 }
-//                 return;
-//             }
-            
-//             // Update password
-//             doctorCredentials[currentDoctorEmail].password = newPassword;
-//             currentDoctor.password = newPassword;
-//             saveDoctorCredentials();
-//             localStorage.setItem('loggedInDoctor', JSON.stringify(currentDoctor));
-
-//             console.log('Password updated for:', currentDoctorEmail);
-//             console.log('New password saved:', newPassword);
-            
-//             // Show success message
-//             if (successDiv) {
-//                 successDiv.textContent = 'Password updated successfully!';
-//                 successDiv.classList.remove('hidden');
-//             }
-            
-//             // Clear form
-//             changePasswordForm.reset();
-            
-//             // Auto-redirect to dashboard after 2 seconds
-//             setTimeout(() => {
-//                 showDashboard();
-//             }, 2000);
-//         });
-//     }
-// });
-
-
-
-
-// function displayAppointments(containerId, appointments) {
-//     const container = document.getElementById(containerId);
-//     if (!container) return;
-    
-//     if (appointments.length === 0) {
-//         container.innerHTML = '<p class="text-muted text-center">No appointments found</p>';
-//         return;
-//     }
-
-//     container.innerHTML = appointments.map(apt => `
-//         <div class="appointment-card">
-//             <div class="row align-items-center">
-//                 <div class="col-md-8">
-//                     <h6 class="mb-1">${apt.user_name}</h6>
-//                     <p class="mb-1"><i class="fas fa-envelope"></i> ${apt.user_email}</p>
-//                     <p class="mb-1"><i class="fas fa-phone"></i> ${apt.user_phone}</p>
-//                     <p class="mb-0"><i class="fas fa-stethoscope"></i> ${apt.service}</p>
-//                 </div>
-//                 <div class="col-md-4 text-end">
-//                     <span class="badge bg-primary">${apt.appointment_date}</span>
-//                 </div>
-//             </div>
-//         </div>
-//     `).join('');
-// }
-
-
-// function updateStats() {
-//     // Stats are updated in loadAppointments and loadBlockedDates
-// }
-
-// // Initialize when page loads - THIS IS THE KEY FIX
-// window.addEventListener('DOMContentLoaded', function() {
-//     loadDoctorCredentials();
-//     // Initialize doctor session first
-//     initializeDoctorSession();
-    
-//     // Check if this is the admin page (has blockedDatesList element)
-//     const blockedDatesContainer = document.getElementById('blockedDatesList');
-    
-//     if (blockedDatesContainer) {
-//         // This is the admin page
-//         if (currentDoctor && currentDoctorEmail) {
-//             // Update doctor name
-//             const doctorNameElement = document.getElementById('doctorName');
-//             if (doctorNameElement) {
-//                 doctorNameElement.textContent = `Welcome, ${currentDoctor.name}`;
-//             }
-            
-//             // Load blocked dates IMMEDIATELY
-//             loadBlockedDates();
-            
-//             // Then load other dashboard data
-//             loadDashboardData();
-            
-//             // Set minimum date for date picker
-//             const blockDateInput = document.getElementById('blockDate');
-//             if (blockDateInput) {
-//                 blockDateInput.min = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-//             }
-//         } 
-//     }
-// });
