@@ -315,6 +315,12 @@ function bookAppointment(event) {
 
     const form = document.getElementById("appointmentForm2");
     const formData = new FormData(form);
+    let patient_phonenumber = formData.get("user_phone");
+
+    // Trim removes spaces so even "   " is treated as empty
+    if (!patient_phonenumber || patient_phonenumber.trim() === "") {
+        alert("Please enter the patient's phone number");
+    }
 
     const payload = {
         name: formData.get("user_name"),
