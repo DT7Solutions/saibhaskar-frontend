@@ -775,6 +775,11 @@ input[type="date"] {
     padding: 35px 30px 20px 30px;
 }
 
+/* social media  */
+.footer-social2{
+    display: none !important;
+}
+
 
 /* Responsiveness layout size */
 @media (max-width: 991px) {
