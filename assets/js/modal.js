@@ -320,6 +320,7 @@ function bookAppointment(event) {
     // Trim removes spaces so even "   " is treated as empty
     if (!patient_phonenumber || patient_phonenumber.trim() === "") {
         alert("Please enter the patient's phone number");
+        return;
     }
 
     const payload = {
