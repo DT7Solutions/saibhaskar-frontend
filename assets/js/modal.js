@@ -10,122 +10,121 @@ const itemsPerPage = 10;
 // let originalProfileData = {};
 
 // Doctor-Service mapping based on your hospital's medical staff
-        const doctorServiceMapping = {
-            "Orthopedics": [
-                {
-                    value: "3",
-                    text: "Dr. Busireddy Narendra Reddy",
-                    qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon"
-                },
-                {
-                    value: "5",
-                    text: "Dr. Srinavasa Rao Konakandla",
-                    qualification: "M.B.B.S.,D.NB(Ortho).,F.I.J.R. - Orthopaedic & Joint Replacement Surgeon"
-                }
-            ],
-            "Obstetrics & Gynaecology": [
-                {
-                    value: "4",
-                    text: "Dr. B. Deepthi Reddy",
-                    qualification: "M.S(OBG) - Consultant Obstetrician & Gynaecologist"
-                }
-            ],
-            "Pulmonology": [
-                {
-                    value: "6",
-                    text: "Dr. Nageswara Rao Gopathi",
-                    qualification: "M.D.,FCCP.,FAPSR. - Pulmonologist & Sleep Specialist"
-                }
-            ],
-            "General Medicine": [
-                {
-                    value: "8",
-                    text: "Dr. Yogitha Chennupati",
-                    qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist"
-                }
-            ],
-            "Anaesthesia": [
-                {
-                    value: "7",
-                    text: "Dr. Nune Sankhya",
-                    qualification: "M.B.B.S., M.D.(Anaesthesia) - Anesthesiologist & Intensivist"
-                }
-            ],
-            // Services without specific doctors assigned (you can add general doctors or leave empty)
-            "Neuro Surgery": [],
-            "Plastic Surgery": [],
-            "Emergency & Casualty": [],
-            "General Surgery": []
-        };
+const branchServiceDoctorMapping = {
+    "Guntur": {
+        "Orthopedics": [
+            { value: "3", text: "Dr. Busireddy Narendra Reddy", qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon" },
+            { value: "5", text: "Dr. Srinavasa Rao Konakandla", qualification: "M.B.B.S.,D.NB(Ortho).,F.I.J.R. - Orthopaedic & Joint Replacement Surgeon" }
+        ],
+        "Obstetrics & Gynaecology": [
+            { value: "4", text: "Dr. B. Deepthi Reddy", qualification: "M.S(OBG) - Consultant Obstetrician & Gynaecologist" }
+        ],
+        "Pulmonology": [
+            { value: "6", text: "Dr. Nageswara Rao Gopathi", qualification: "M.D.,FCCP.,FAPSR. - Pulmonologist & Sleep Specialist" }
+        ],
+        "General Medicine": [
+            { value: "8", text: "Dr. Yogitha Chennupati", qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist" }
+        ],
+        "Anaesthesia": [
+            { value: "7", text: "Dr. Nune Sankhya", qualification: "M.B.B.S., M.D.(Anaesthesia) - Anesthesiologist & Intensivist" }
+        ],
+        "Neuro Surgery": [],
+        "Plastic Surgery": [],
+        "Emergency & Casualty": [],
+        "General Surgery": []
+    },
+    
+    "Vijayawada": {
+        "Orthopedics": [
+            { value: "3", text: "Dr. Busireddy Narendra Reddy", qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon" },
+            { value: "9", text: "Dr. Akarsh Kotagiri", qualification: "M.S (Ortho)., F.I.J.R - Orthopaedic & Joint Replacement Surgeon" }
+        ],
+        "Rheumatology": [
+            { value: "8", text: "Dr. Yogitha Chennupati", qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist" }
+        ]
+    }
+};
 
-        // Function to update doctor dropdown based on selected service
-        function updateDoctorDropdown() {
-            const serviceSelect = document.querySelector('select[name="service"]');
-            const doctorSelect = document.querySelector('select[name="doctor"]');
+// Update Services when Branch changes
+function updateServiceDropdown(branchSelect) {
+    const serviceSelect = document.querySelector('select[name="service"]');
+    const doctorSelect = document.querySelector('select[name="doctor"]');
 
-            if (!serviceSelect || !doctorSelect) {
-                console.error('Service or Doctor dropdown not found');
-                return;
-            }
+    serviceSelect.innerHTML = '<option value="" hidden disabled selected>Select Services</option>';
+    doctorSelect.innerHTML = '<option value="" hidden disabled selected>Choose Doctor</option>';
 
-            serviceSelect.addEventListener('change', function () {
-                const selectedService = this.value;
+    if (!branchSelect.value) return;
 
-                // Clear existing doctor options
-                doctorSelect.innerHTML = '<option value="" hidden disabled selected>Choose Doctor</option>';
+    const services = Object.keys(branchServiceDoctorMapping[branchSelect.value]);
+    services.forEach(service => {
+        const option = document.createElement('option');
+        option.value = service;
+        option.textContent = service;
+        serviceSelect.appendChild(option);
+    });
 
-                // Get doctors for selected service
-                const availableDoctors = doctorServiceMapping[selectedService] || [];
+    serviceSelect.disabled = false;
+    doctorSelect.disabled = true;
+}
 
-                if (availableDoctors.length === 0) {
-                    // If no doctors available for this service
-                    doctorSelect.innerHTML = '<option value="" hidden disabled selected>No specific doctor assigned - General consultation available</option>';
-                    doctorSelect.disabled = true;
-                } else {
-                    // Populate doctor dropdown with available doctors
-                    doctorSelect.disabled = false;
+// Update Doctors when Service changes
+function updateDoctorDropdown() {
+    const branchSelect = document.querySelector('select[name="branch"]');
+    const serviceSelect = document.querySelector('select[name="service"]');
+    const doctorSelect = document.querySelector('select[name="doctor"]');
 
-                    availableDoctors.forEach(doctor => {
-                        const option = document.createElement('option');
-                        option.value = doctor.value;
-                        option.textContent = doctor.text;
-                        option.title = doctor.qualification; // Show qualification on hover
-                        doctorSelect.appendChild(option);
-                    });
-                }
+    if (!branchSelect.value || !serviceSelect.value) return;
 
-                // Add visual feedback with smooth transition
-                doctorSelect.style.opacity = '0.5';
-                setTimeout(() => {
-                    doctorSelect.style.opacity = '1';
-                }, 200);
-            });
-        }
+    const doctors = branchServiceDoctorMapping[branchSelect.value][serviceSelect.value] || [];
+    doctorSelect.innerHTML = '<option value="" hidden disabled selected>Choose Doctor</option>';
 
-        // Initialize when modal is shown (for Bootstrap modals)
-        function initializeOnModalShow() {
-            const appointmentModal = document.getElementById('appointmentModal');
-            if (appointmentModal) {
-                appointmentModal.addEventListener('shown.bs.modal', function () {
-                    updateDoctorDropdown();
-                });
-            }
-        }
+    if (doctors.length === 0) {
+        doctorSelect.innerHTML = '<option value="" hidden disabled selected>No doctors available</option>';
+        doctorSelect.disabled = true;
+        return;
+    }
 
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function () {
-            // For immediate initialization if modal is already loaded
-            updateDoctorDropdown();
+    doctorSelect.disabled = false;
+    doctors.forEach(doc => {
+        const option = document.createElement('option');
+        option.value = doc.value;
+        option.textContent = doc.text;
+        option.title = doc.qualification;
+        doctorSelect.appendChild(option);
+    });
+}
 
-            // Also initialize for modal show events
-            initializeOnModalShow();
-        });
+// Initialize all dropdown events
+function initializeDropdowns() {
+    const branchSelect = document.querySelector('select[name="branch"]');
+    const serviceSelect = document.querySelector('select[name="service"]');
 
-        // Additional initialization for dynamic content loading
-        window.addEventListener('load', function () {
-            updateDoctorDropdown();
-            initializeOnModalShow();
-        });
+    if (!branchSelect || !serviceSelect) {
+        console.error("Branch or Service select not found");
+        return;
+    }
+
+    branchSelect.addEventListener('change', function () {
+        updateServiceDropdown(this);
+    });
+
+    serviceSelect.addEventListener('change', updateDoctorDropdown);
+}
+
+// Bootstrap Modal Initialization
+function initializeOnModalShow() {
+    const appointmentModal = document.getElementById('appointmentModal');
+    if (appointmentModal) {
+        appointmentModal.addEventListener('shown.bs.modal', initializeDropdowns);
+    }
+}
+
+// Initialize cleanly
+document.addEventListener('DOMContentLoaded', () => {
+    initializeDropdowns();
+    initializeOnModalShow();
+});
+window.addEventListener('load', initializeDropdowns);
 
 // Password toggle functionality
 function togglePassword(fieldId) {
@@ -237,6 +236,7 @@ function loadBlockedDates() {
                     container.appendChild(badge);
                     document.getElementById('blocked-Count').textContent = data.length;
                     localStorage.setItem("doc_b_d", JSON.stringify(data));
+                    
 
                 });
                 
@@ -325,6 +325,7 @@ function bookAppointment(event) {
         email: formData.get("user_email"),
         phone: formData.get("user_phone"),
         service: formData.get("service"),
+        branch: formData.get("branch"),
         doctor: formData.get("doctor"),
         appointment_date: formData.get("appointment_date")
     };
@@ -406,7 +407,7 @@ function renderAppointments(tableId, appointments, page = 1, itemsPerPage = 10) 
     tbody.innerHTML = "";
 
     if (!appointments || appointments.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center">No appointments</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center">No appointments</td></tr>`;
         return;
     }
 
@@ -422,6 +423,7 @@ function renderAppointments(tableId, appointments, page = 1, itemsPerPage = 10) 
             <td>${appt.user_name || 'N/A'}</td>
             <td>${appt.user_email || 'N/A'}</td>
             <td>${appt.user_phone || 'N/A'}</td>
+            <td>${appt.branch || 'N/A'}</td>
             <td>${appt.appointment_date || 'N/A'}</td>
             <td>${appt.status || 'N/A'}</td>
             <td onclick="statusaction(${appt.id})"><a href="#">Edit</a></td>
