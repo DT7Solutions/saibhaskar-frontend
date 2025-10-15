@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>About Us | One of the Best Hospitals in Guntur</title>
+    <title>Gallery | One of the Best Hospitals in Guntur</title>
     <meta name="author" content="Sai Bhaskar Hospitals">
     <meta name="description" content="We are a team of qualified, experienced, and dedicated doctors offering world-class treatment across many specialties. ">
     <meta name="keywords" content="Hospitals in guntur,Multispeciality hospital.Quality healthcare">
@@ -352,6 +352,85 @@
         </div>
     </section>
     
+    <!-- Appointment Popup Modal -->
+    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title">Book Appointment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="appointmentForm2" class="form-box">
+                        <div class="row g-3">
+
+                            <!-- Name -->
+                            <div class="col-md-6 form-group">
+                                <input type="text" class="form-control style2" placeholder="Your Name" name="user_name"
+                                    required>
+                                <i class="fal small fa-user"></i>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6 form-group">
+                                <input type="email" class="form-control style2" placeholder="Email Address"
+                                    name="user_email" required>
+                                <i class="fal small fa-envelope"></i>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="col-md-6 form-group">
+                                <input type="number" class="form-control style2" placeholder="Your Phone Number"
+                                    name="user_phone" required>
+                                <i class="fal small fa-phone"></i>
+                            </div>
+
+                            <!-- Branch -->
+                            <div class="col-md-6 form-group">
+                                <select class="form-select style2" name="branch" required>
+                                    <option value="" hidden disabled selected >Select Branch</option>
+                                    <option value="Guntur" >Guntur</option>
+                                    <option value="Vijayawada">Vijayawada</option>
+                                </select>
+                            </div>
+
+
+                            <!-- Service -->
+                            <div class="col-md-6 form-group">
+                                <select class="form-select style2" name="service" id="serviceSelect" required>
+                                    <option value="" hidden disabled selected>Select Service</option>
+                                </select>
+                            </div>
+
+                            <!-- Doctor -->
+                            <div class="col-md-6 form-group">
+                                <select class="form-select style2" name="doctor" id="doctorSelect" required>
+                                    <option value="" hidden disabled selected>Choose Doctor</option>
+                                </select>
+                            </div>
+
+                            <input type="hidden" name="submission_date" id="submission_date">
+
+                            <!-- Appointment Date -->
+                            <div class="col-md-6 form-group">
+                                <input type="date" class="form-control style2" placeholder="Select Date"
+                                    name="appointment_date" id="date"  required style="background-color: white !important;">
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="col-12 text-center">
+                                <button type="button" class="vs-btn style2" onclick="bookAppointment(event)">
+                                    Book Appointment <i class="far fa-calendar-alt"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
