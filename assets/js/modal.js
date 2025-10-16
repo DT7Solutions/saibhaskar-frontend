@@ -153,8 +153,12 @@ function login_functionality() {
     loginError.textContent = "";
 
     if (!email || !password) {
-        loginError.textContent = "Please enter both email and password.";
-        loginError.classList.remove('d-none');
+         Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: 'Please enter both email and password.',
+            confirmButtonColor: '#1F66B1'
+        });
         return;
     }
 
@@ -162,6 +166,16 @@ function login_functionality() {
         email: email,
         password: password
     };
+
+    Swal.fire({
+        title: 'Logging in...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     // Use the config instead of hardcoded URL
     apiFetch(API_CONFIG.ENDPOINTS.LOGIN, {
@@ -175,39 +189,96 @@ function login_functionality() {
         if (data.status_code === 200) {
             localStorage.setItem("user", JSON.stringify(data.data));
             
-            // Remove the leading slash
-            window.location.href = "/admin.html";
+            // Success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Successful!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = "/admin.html";
+            });
         } else {
-            alert(data.message);
-            loginError.textContent = data.message || "Invalid credentials.";
-            loginError.classList.remove('d-none');
+            // Error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: data.message || "Invalid credentials.",
+                confirmButtonColor: '#d33'
+            });
         }
     })
     .catch(error => {
         console.error("Error:", error);
-        loginError.textContent = "Something went wrong. Please try again.";
-        loginError.classList.remove('d-none');
+        
+        // Network error
+        Swal.fire({
+            icon: 'error',
+            title: 'Connection Error',
+            text: 'Something went wrong. Please check your internet connection and try again.',
+            confirmButtonColor: '#d33'
+        });
     });
 }
 
 function logout() {
-    apiFetch(API_CONFIG.ENDPOINTS.LOGOUT, {
-        method: "POST"
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Logout Response:", data);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to logout?",
+        showCancelButton: true,
+        confirmButtonColor: '#1F66B1',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading
+            Swal.fire({
+                title: 'Logging out...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-        // Clear frontend storage
-        localStorage.removeItem("user");
-        window.location.href = "/login.html";
-    })
-    .catch(error => {
-        console.error("Logout Error:", error);
+            apiFetch(API_CONFIG.ENDPOINTS.LOGOUT, {
+                method: "POST"
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Logout Response:", data);
 
-        // Even if API fails, clear local storage
-        localStorage.removeItem("user");
-        window.location.href = "/login.html";
+                // Clear frontend storage
+                localStorage.removeItem("user");
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logged Out',
+                    text: 'You have been logged out successfully',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "/login.html";
+                });
+            })
+            .catch(error => {
+                console.error("Logout Error:", error);
+
+                // Even if API fails, clear local storage
+                localStorage.removeItem("user");
+                
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Logged Out',
+                    text: 'Session ended',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "/login.html";
+                });
+            });
+        }
     });
 }
 
@@ -236,8 +307,6 @@ function loadBlockedDates() {
                     container.appendChild(badge);
                     document.getElementById('blocked-Count').textContent = data.length;
                     localStorage.setItem("doc_b_d", JSON.stringify(data));
-                    
-
                 });
                 
 
@@ -248,11 +317,17 @@ function loadBlockedDates() {
                 dateInput.oninput = function () {
                     const selected = this.value;
                     if (data.some(item => item.date === selected)) {
-                        alert("This date is already blocked");
+                        Swal.fire({
+                            title: "Warning",
+                            text: "This date is already blocked",
+                            icon: "warning",
+                            confirmButtonColor: "#F58321"
+                        });
                         this.value = '';
                     }
                 };
             }
+
         })
         .catch(err => console.error(err));
 }
@@ -260,36 +335,114 @@ function loadBlockedDates() {
 function blockDate() {
     const dateInput = document.getElementById('blockDate').value;
     if (!dateInput) {
-        alert("Please select a date");
+        Swal.fire({
+            title: "Error",
+            text: "Please select a date",
+            icon: "warning",
+            confirmButtonColor: "#f58321"
+        });
         return;
     }
-    const user = JSON.parse(localStorage.getItem("user"));
 
+    const user = JSON.parse(localStorage.getItem("user"));
     const doctor_id = `${user.id}`;
 
     apiFetch(API_CONFIG.ENDPOINTS.BLOCK_DATE, {
         method: "POST",
-        body: JSON.stringify({ doctor: parseInt(doctor_id),  date: dateInput })
+        body: JSON.stringify({ doctor: parseInt(doctor_id), date: dateInput })
     })
     .then(res => res.json())
     .then(data => {
         if (data.error) {
-            alert(data.error);
+            Swal.fire({
+                title: "Error",
+                text: data.error,
+                icon: "error",
+                confirmButtonColor: "#F58321"
+            });
         } else {
             loadBlockedDates();
             document.getElementById('blockDate').value = '';
+
+            Swal.fire({
+                title: "Success",
+                text: "Date blocked successfully!",
+                icon: "success",
+                confirmButtonColor: "#1F66B1",
+                timer: 2000,
+                showConfirmButton: false
+            });
         }
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+        console.error(err);
+        Swal.fire({
+            title: "Error",
+            text: "Something went wrong. Please try again.",
+            icon: "error",
+            confirmButtonColor: "#F58321"
+        });
+    });
 }
 
+
 function unblockDate(date) {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const doctor_id = `${user.id}`;
-    apiFetch(API_CONFIG.ENDPOINTS.UNBLOCK_DATE(doctor_id, date), { method: "DELETE" })
-        .then(res => res.json())
-        .then(() => loadBlockedDates())
-        .catch(err => console.error(err));
+    Swal.fire({
+        title: 'Unblock Date?',
+        text: `Are you sure you want to unblock ${date}?`,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, unblock it',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const doctor_id = `${user.id}`;
+            
+            // Show loading
+            Swal.fire({
+                title: 'Unblocking date...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            apiFetch(API_CONFIG.ENDPOINTS.UNBLOCK_DATE(doctor_id, date), { 
+                method: "DELETE" 
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Unblocked!',
+                    text: `${date} has been unblocked successfully`,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                
+                // Force reload blocked dates
+                setTimeout(() => {
+                    loadBlockedDates();
+                }, 100);
+            })
+            .catch(err => {
+                console.error('Unblock date error:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to unblock date. Please try again.',
+                    confirmButtonColor: '#d33'
+                });
+            });
+        }
+    });
 }
 
 document.addEventListener("DOMContentLoaded", loadBlockedDates);
@@ -303,20 +456,33 @@ function bookAppointment(event) {
     let patient_email = formData.get("user_email");
 
     // Validate patient name
-    if (!patient_name || patient_name.trim() === "") {
-        alert("Please enter the patient's name");
+     if (!patient_name || patient_name.trim() === "") {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: "Please enter the patient's name",
+            confirmButtonColor: '#3085d6'
+        });
         return;
     }
 
-    // Validate patient phone number
     if (!patient_phonenumber || patient_phonenumber.trim() === "") {
-        alert("Please enter the patient's phone number");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: "Please enter the patient's phone number",
+            confirmButtonColor: '#3085d6'
+        });
         return;
     }
 
-    // Validate patient email
     if (!patient_email || patient_email.trim() === "") {
-        alert("Please enter the patient's email address");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: "Please enter the patient's email address",
+            confirmButtonColor: '#3085d6'
+        });
         return;
     }
     
@@ -331,6 +497,16 @@ function bookAppointment(event) {
     };
     console.log("Booking Payload:", payload);
 
+    // Show loading
+    Swal.fire({
+        title: 'Booking appointment...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     apiFetch(API_CONFIG.ENDPOINTS.BOOK_APPOINTMENT, {
         method: "POST",
         body: JSON.stringify(payload)
@@ -343,12 +519,23 @@ function bookAppointment(event) {
     })
     .then(data => {
         console.log("Book Appointment Response:", data);
-        alert("Appointment booked successfully!");
+        
         form.reset();
+        Swal.fire({
+            title: 'Appointment Booked!',
+            text: `Your appointment has been successfully booked.`,
+            icon: 'success',
+            confirmButtonColor: '#1F66B1'
+        });
     })
     .catch(error => {
         console.error("Book Appointment Error:", error);
-        alert("Failed to book appointment. Please try again.");
+        Swal.fire({
+            title: 'Booking Failed',
+            text: error.message || "Failed to book appointment. Please try again.",
+            icon: 'error',
+            confirmButtonColor: '#F58321'
+        });
     });
 }
 
@@ -482,11 +669,26 @@ document.getElementById("statusForm").addEventListener("submit", function(e) {
     const newStatus = document.getElementById("statusSelect").value;
 
     if (!selectedAppointmentId || !newStatus) {
-        alert("Please select a valid status.");
+        Swal.fire({
+            title: "Error",
+            text: "Please select a valid status.",
+            icon: "warning",
+            confirmButtonColor: "#F58321"
+        });
         return;
     }
 
     const url = API_CONFIG.ENDPOINTS.STATUS_UPDATE(selectedAppointmentId, newStatus);
+
+    // Show loader while updating status
+    Swal.fire({
+        title: 'Updating status...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     apiFetch(url, {
         method: "POST",
@@ -500,15 +702,27 @@ document.getElementById("statusForm").addEventListener("submit", function(e) {
         return response.json();
     })
     .then(data => {
-        alert(`Appointment status updated to "${newStatus}"`);
-        closeModal();
-        loadAppointments(); // refresh the table only
+        Swal.fire({
+            title: "Success",
+            text: `Appointment status updated to "${newStatus}"`,
+            icon: "success",
+            confirmButtonColor: "#1F66B1"
+        }).then(() => {
+            closeModal();
+            loadAppointments(); // refresh the table only
+        });
     })
     .catch(error => {
         console.error("Error updating appointment:", error);
-        alert(`Error: ${error.message}`);
+        Swal.fire({
+            title: "Error",
+            text: `Error: ${error.message}`,
+            icon: "error",
+            confirmButtonColor: "#F58321"
+        });
     });
 });
+
 
 // ----------------------
 // Initialize on Page Load
@@ -586,16 +800,39 @@ function saveProfile() {
         address: document.getElementById('profileAddress').value
     };
 
+    Swal.fire({
+        title: 'Updating profile...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     apiFetch(API_CONFIG.ENDPOINTS.USER_PROFILE(user.id), {
         method: 'PUT',
         body: JSON.stringify(formData)
     })
     .then(res => res.json())
     .then(data => {
-        alert('Profile updated successfully!');
-        cancelEdit();
+        Swal.fire({
+            title: 'Success',
+            text: 'Profile updated successfully!',
+            icon: 'success',
+            confirmButtonColor: '#1F66B1'
+        }).then(() => {
+            cancelEdit();
+        });
     })
-    .catch(err => alert('Failed to update profile'));
+    .catch(err => {
+        console.error(err);
+        Swal.fire({
+            title: 'Error',
+            text: err.message || 'Failed to update profile',
+            icon: 'error',
+            confirmButtonColor: '#F58321'
+        });
+    });
 }
 
 // Initialize profile loading when DOM is ready
@@ -608,10 +845,26 @@ document.addEventListener('DOMContentLoaded', function() {
 // update password   
 function updatePassword() {
     const form = document.getElementById('changePasswordForm');
-    if (!form) return alert("Form not found");
+    if (!form) {
+        Swal.fire({
+            title: "Error",
+            text: "Form not found",
+            icon: "error",
+            confirmButtonColor: "#F58321"
+        });
+        return;
+    }
 
     const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || !user.id) return alert("Please login again.");
+    if (!user || !user.id) {
+        Swal.fire({
+            title: "Error",
+            text: "Please login again.",
+            icon: "warning",
+            confirmButtonColor: "#F58321"
+        });
+        return;
+    }
 
     const data = {
         current_password: document.getElementById('currentPassword').value,
@@ -619,13 +872,38 @@ function updatePassword() {
         confirm_password: document.getElementById('confirmPassword').value
     };
 
-    if (!data.current_password || !data.new_password || !data.confirm_password)
-        return alert("All fields are required.");
+    if (!data.current_password || !data.new_password || !data.confirm_password) {
+        Swal.fire({
+            title: "Error",
+            text: "All fields are required.",
+            icon: "warning",
+            confirmButtonColor: "#F58321"
+        });
+        return;
+    }
 
-    if (data.new_password !== data.confirm_password)
-        return alert("New passwords do not match.");
-    doctorid= user.id
-  
+    if (data.new_password !== data.confirm_password) {
+        Swal.fire({
+            title: "Error",
+            text: "New passwords do not match.",
+            icon: "warning",
+            confirmButtonColor: "#F58321"
+        });
+        return;
+    }
+
+    const doctorid = user.id;
+
+    // Show loader while updating password
+    Swal.fire({
+        title: 'Updating password...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     apiFetch(API_CONFIG.ENDPOINTS.CHANGE_PASSWORD(doctorid), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -634,19 +912,29 @@ function updatePassword() {
     .then(res => res.text().then(text => text ? JSON.parse(text) : {}))
     .then(body => {
         if (body.message) {
-            alert(body.message);
-            form.reset();
-            // Optional: log out user after password change
-            localStorage.removeItem('user'); 
-            // window.location.href = '/login/'; // redirect to login
-            window.location.href = "/login.html";
+            Swal.fire({
+                title: "Success",
+                text: body.message,
+                icon: "success",
+                confirmButtonColor: "#1F66B1"
+            }).then(() => {
+                form.reset();
+                localStorage.removeItem('user');
+                window.location.href = "/login.html";
+            });
         }
     })
     .catch(err => {
         console.error(err);
-        alert("An error occurred. Please try again.");
+        Swal.fire({
+            title: "Error",
+            text: "An error occurred. Please try again.",
+            icon: "error",
+            confirmButtonColor: "#F58321"
+        });
     });
 }
+
 
 
 
