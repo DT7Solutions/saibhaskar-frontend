@@ -291,6 +291,12 @@ function loadBlockedDates() {
             const container = document.getElementById('blockedDatesList');
             const dateInput = document.getElementById('blockDate');
             container.innerHTML = '';
+
+            // ✅ Disable past dates
+            if (dateInput) {
+                const today = new Date().toISOString().split("T")[0];
+                dateInput.setAttribute("min", today);
+            }
         
             if (data.length === 0) {
                 container.innerHTML = '<span class="text-muted">No blocked dates</span>';
