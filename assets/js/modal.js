@@ -900,7 +900,7 @@ function updatePassword() {
 
     const doctorid = user.id;
 
-    // Show loader while updating password
+    // Loader while updating
     Swal.fire({
         title: 'Updating password...',
         text: 'Please wait',
@@ -915,12 +915,24 @@ function updatePassword() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
-    .then(res => res.text().then(text => text ? JSON.parse(text) : {}))
-    .then(body => {
-        if (body.message) {
+    .then(async res => {
+        const text = await res.text();
+        const body = text ? JSON.parse(text) : {};
+
+        if (res.status === 400) {
+            // Incorrect current password or validation error
+            Swal.fire({
+                title: "Error",
+                text: body.message || "Current password is incorrect.",
+                icon: "error",
+                confirmButtonColor: "#F58321"
+            });
+        } 
+        else if (res.status === 200) {
+            // Password updated successfully
             Swal.fire({
                 title: "Success",
-                text: body.message,
+                text: body.message || "Password updated successfully!",
                 icon: "success",
                 confirmButtonColor: "#1F66B1"
             }).then(() => {
@@ -928,18 +940,28 @@ function updatePassword() {
                 localStorage.removeItem('user');
                 window.location.href = "/login.html";
             });
+        } 
+        else {
+            // Any other status
+            Swal.fire({
+                title: "Unexpected Error",
+                text: body.message || "Something went wrong. Please try again.",
+                icon: "warning",
+                confirmButtonColor: "#F58321"
+            });
         }
     })
     .catch(err => {
         console.error(err);
         Swal.fire({
             title: "Error",
-            text: "An error occurred. Please try again.",
+            text: "A network or server error occurred. Please try again later.",
             icon: "error",
             confirmButtonColor: "#F58321"
         });
     });
 }
+
 
 
 
