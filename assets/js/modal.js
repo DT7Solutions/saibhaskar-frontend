@@ -13,20 +13,20 @@ const itemsPerPage = 10;
 const branchServiceDoctorMapping = {
     "Guntur": {
         "Orthopedics": [
-            { value: "3", text: "Dr. Busireddy Narendra Reddy", qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon" },
-            { value: "5", text: "Dr. Srinavasa Rao Konakandla", qualification: "M.B.B.S.,D.NB(Ortho).,F.I.J.R. - Orthopaedic & Joint Replacement Surgeon" }
+            { value: "4", text: "Dr. Busireddy Narendra Reddy", qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon" },
+            { value: "3", text: "Dr. Srinavasa Rao Konakandla", qualification: "M.B.B.S.,D.NB(Ortho).,F.I.J.R. - Orthopaedic & Joint Replacement Surgeon" }
         ],
         "Obstetrics & Gynaecology": [
-            { value: "4", text: "Dr. B. Deepthi Reddy", qualification: "M.S(OBG) - Consultant Obstetrician & Gynaecologist" }
+            { value: "2", text: "Dr. B. Deepthi Reddy", qualification: "M.S(OBG) - Consultant Obstetrician & Gynaecologist" }
         ],
         "Pulmonology": [
-            { value: "6", text: "Dr. Nageswara Rao Gopathi", qualification: "M.D.,FCCP.,FAPSR. - Pulmonologist & Sleep Specialist" }
+            { value: "5", text: "Dr. Nageswara Rao Gopathi", qualification: "M.D.,FCCP.,FAPSR. - Pulmonologist & Sleep Specialist" }
         ],
         "General Medicine": [
-            { value: "8", text: "Dr. Yogitha Chennupati", qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist" }
+            { value: "7", text: "Dr. Yogitha Chennupati", qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist" }
         ],
         "Anaesthesia": [
-            { value: "7", text: "Dr. Nune Sankhya", qualification: "M.B.B.S., M.D.(Anaesthesia) - Anesthesiologist & Intensivist" }
+            { value: "6", text: "Dr. Nune Sankhya", qualification: "M.B.B.S., M.D.(Anaesthesia) - Anesthesiologist & Intensivist" }
         ],
         "Neuro Surgery": [],
         "Plastic Surgery": [],
@@ -36,11 +36,11 @@ const branchServiceDoctorMapping = {
     
     "Vijayawada": {
         "Orthopedics": [
-            { value: "3", text: "Dr. Busireddy Narendra Reddy", qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon" },
-            { value: "9", text: "Dr. Akarsh Kotagiri", qualification: "M.S (Ortho)., F.I.J.R - Orthopaedic & Joint Replacement Surgeon" }
+            { value: "4", text: "Dr. Busireddy Narendra Reddy", qualification: "M.S.(Ortho).,D.NB(Ortho).,M.Ch(Ortho) - Chief Joint Replacement Surgeon" },
+            { value: "8", text: "Dr. Akarsh Kotagiri", qualification: "M.S (Ortho)., F.I.J.R - Orthopaedic & Joint Replacement Surgeon" }
         ],
         "Rheumatology": [
-            { value: "8", text: "Dr. Yogitha Chennupati", qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist" }
+            { value: "7", text: "Dr. Yogitha Chennupati", qualification: "MD General Medicine, Rheumatologist - Rheumatology Specialist" }
         ]
     }
 };
