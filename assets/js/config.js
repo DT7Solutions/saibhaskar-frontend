@@ -1,6 +1,6 @@
 // API Configuration
 const API_CONFIG = {
-    BASE_URL: 'https://saibhaskarhospital.com',
+    BASE_URL: 'https://api.saibhaskarhospital.com',
     ENDPOINTS: {
         LOGIN: '/api/login/',
         LOGOUT: '/api/logout/',
