@@ -806,6 +806,19 @@ function saveProfile() {
         address: document.getElementById('profileAddress').value
     };
 
+    const isEmpty = Object.values(formData).some(value => value === "");
+    if (isEmpty) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Missing Information',
+        text: 'Please enter all required data before submitting!',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    });
+    return;
+    }
+
+    
     Swal.fire({
         title: 'Updating profile...',
         text: 'Please wait',
@@ -831,10 +844,11 @@ function saveProfile() {
         });
     })
     .catch(err => {
-        console.error(err);
+        // console.error(err);
         Swal.fire({
             title: 'Error',
-            text: err.message || 'Failed to update profile',
+            // text: err.message || 'Failed to update profile',
+            text: 'Failed to update profile',
             icon: 'error',
             confirmButtonColor: '#F58321'
         });
